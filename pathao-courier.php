@@ -18,3 +18,5 @@ defined( 'PTC_PLUGIN_FILE' ) || define( 'PTC_PLUGIN_FILE', plugin_basename( __FI
 
 
 require_once PTC_PLUGIN_DIR.'/settings-page.php';
+require_once PTC_PLUGIN_DIR.'/pathao-bridge.php';
+require_once PTC_PLUGIN_DIR.'/plugin-api.php';

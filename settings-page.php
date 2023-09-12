@@ -1,89 +1,93 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// Register AJAX action
+add_action('wp_ajax_get_token', 'ajax_get_token');
+
+function ajax_get_token() {
+    $token = pt_hms_get_token();
+    if ($token) {
+        wp_send_json_success(array('access_token' => $token));
+    } else {
+        wp_send_json_error(array('message' => 'Failed to retrieve the token.'));
+    }
+}
+
+// Admin menu setup
 add_action('admin_menu', 'pt_hms_menu_page');
 
-// Action function for the above hook
+// Admin menu callback
 function pt_hms_menu_page() {
-    // Add a new top-level menu with an icon
     add_menu_page(
         'Pathao Courier Settings', 
         'Pathao Courier', 
         'manage_options', 
         'pt_hms_settings', 
         'pt_hms_settings_page', 
-        'dashicons-move', // WordPress Dashicon as the menu icon
-        6 // Position in the menu order
+        'dashicons-move', 
+        6
     );
 }
 
-// Function to display the admin options page
+// Render the settings page
 function pt_hms_settings_page() {
-?>
-<div class="wrap">
-    <h2>Pathao Courier Settings</h2>
-    <form method="post" action="options.php">
-        <?php settings_fields('pt_hms_settings_group'); ?>
-        <?php do_settings_sections('pt_hms_settings'); ?>
-        <?php submit_button(); ?>
-    </form>
-</div>
-<?php
+    ?>
+    <div class="wrap">
+        <h2>Pathao Courier Settings</h2>
+        <form method="post" action="options.php">
+            <?php 
+                settings_fields('pt_hms_settings_group');
+                do_settings_sections('pt_hms_settings');
+                submit_button(); 
+            ?>
+        </form>
+        <!-- Token Fetch Button -->
+        <section>
+            <h3>Test Credentials</h3>
+            <button type="button" id="fetch-token-btn">Fetch Token</button>
+        </section>
+        <!-- JavaScript for AJAX call -->
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                $('#fetch-token-btn').on('click', function() {
+                    $.ajax({
+                        url: ajaxurl,
+                        method: 'POST',
+                        data: {
+                            action: 'get_token',
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Token: ' + response.data.access_token);
+                            } else {
+                                alert('Error: ' + response.data.message);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+    <?php
 }
 
-// Hook admin init
+// Admin init setup
 add_action('admin_init', 'pt_hms_settings_init');
 
-// Action function for above hook
+// Admin init callback
 function pt_hms_settings_init() {
     register_setting('pt_hms_settings_group', 'pt_hms_settings');
 
-    add_settings_section(
-        'section_one',
-        'API Credentials',
-        'section_one_callback',
-        'pt_hms_settings'
-    );
-
-    add_settings_field(
-        'client_id',
-        'Client ID',
-        'field_client_id_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
-
-    add_settings_field(
-        'client_secret',
-        'Client Secret',
-        'field_client_secret_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
-
-    add_settings_field(
-        'username',
-        'Username (Email)',
-        'field_username_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
-
-    add_settings_field(
-        'password',
-        'Password',
-        'field_password_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
-
-    add_settings_field(
-        'environment',
-        'Environment',
-        'field_environment_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
+    // API Credentials
+    add_settings_section('section_one', 'API Credentials', 'section_one_callback', 'pt_hms_settings');
+    add_settings_field('client_id', 'Client ID', 'field_client_id_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field('client_secret', 'Client Secret', 'field_client_secret_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field('environment', 'Environment', 'field_environment_callback', 'pt_hms_settings', 'section_one');
 }
 
 function section_one_callback() {
@@ -122,3 +126,4 @@ function field_environment_callback() {
       <option value='staging' " . selected($selected, 'staging', false) . ">Staging</option>
   </select>";
 }
+
