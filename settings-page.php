@@ -44,9 +44,15 @@ function pt_hms_menu_page()
 // Render the settings page
 function pt_hms_settings_page()
 {
+    $token = pt_hms_get_token();
 ?>
     <div class="wrap">
         <h2>Pathao Courier Settings</h2>
+        <?php if(!$token):?>
+        <div class="notice notice-error">
+            <p>API credentials are invalid. Please check your credentials and try again.</p>
+        </div>
+        <?php endif;?>
         <form method="post" action="options.php">
             <input type="hidden" name="your_hidden_field" value="my_custom_action">
             <?php
@@ -156,10 +162,14 @@ function field_environment_callback()
 }
 
 function field_default_store_callback() {
+    $stores = pt_hms_get_stores(); // Assuming this function returns an array of stores
+    if (!$stores || !is_array($stores) || empty($stores)) {
+        echo "No stores found.";
+        return;
+    }
+
     $options = get_option('pt_hms_settings');
     $selected_store = is_array($options) && isset($options['default_store']) ? $options['default_store'] : '';
-
-    $stores = pt_hms_get_stores(); // Assuming this function returns an array of stores
 
     echo "<select name='pt_hms_settings[default_store]' style='width: 300px;'>";
     foreach($stores as $store) {
