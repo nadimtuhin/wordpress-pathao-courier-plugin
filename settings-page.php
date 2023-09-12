@@ -14,6 +14,16 @@ function ajax_get_token()
     }
 }
 
+add_action('update_option_pt_hms_settings', 'pt_hms_on_option_update', 10, 3);
+
+function pt_hms_on_option_update($old_value, $new_value, $option) {
+    // Reset the token stored in the database.
+    delete_option('pt_hms_token_data');
+
+    // Fetch a new token.
+    pt_hms_get_token(); // Assuming pt_hms_get_token is your function to fetch the new token.
+}
+
 // Admin menu setup
 add_action('admin_menu', 'pt_hms_menu_page');
 
@@ -38,6 +48,7 @@ function pt_hms_settings_page()
     <div class="wrap">
         <h2>Pathao Courier Settings</h2>
         <form method="post" action="options.php">
+            <input type="hidden" name="your_hidden_field" value="my_custom_action">
             <?php
             settings_fields('pt_hms_settings_group');
             do_settings_sections('pt_hms_settings');
@@ -91,6 +102,13 @@ function pt_hms_settings_init()
     add_settings_field('client_secret', 'Client Secret', 'field_client_secret_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field(
+        'default_store',
+        'Default Store',
+        'field_default_store_callback',
+        'pt_hms_settings',
+        'section_one'
+    );
     add_settings_field('environment', 'Environment', 'field_environment_callback', 'pt_hms_settings', 'section_one');
 }
 
@@ -135,4 +153,18 @@ function field_environment_callback()
       <option value='live' " . selected($selected, 'live', false) . ">Live</option>
       <option value='staging' " . selected($selected, 'staging', false) . ">Staging</option>
   </select>";
+}
+
+function field_default_store_callback() {
+    $options = get_option('pt_hms_settings');
+    $selected_store = is_array($options) && isset($options['default_store']) ? $options['default_store'] : '';
+
+    $stores = pt_hms_get_stores(); // Assuming this function returns an array of stores
+
+    echo "<select name='pt_hms_settings[default_store]' style='width: 300px;'>";
+    foreach($stores as $store) {
+        $selected = ($selected_store == $store['store_id']) ? 'selected' : '';
+        echo "<option value='{$store['store_id']}' $selected>{$store['store_name']}</option>";
+    }
+    echo "</select>";
 }

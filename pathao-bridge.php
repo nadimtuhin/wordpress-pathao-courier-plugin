@@ -108,3 +108,75 @@ function pt_hms_get_token() {
   // Return the current access token.
   return $token_data ? $token_data['access_token'] : false;
 }
+
+function pt_hms_get_stores() {
+  $url = get_base_url() . "/aladdin/api/v1/stores";
+  $token = pt_hms_get_token();
+
+  $args = array(
+      'headers' => array(
+          'Authorization' => 'Bearer ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+      )
+  );
+
+  $response = wp_remote_get($url, $args);
+  // var_dump(json_decode(wp_remote_retrieve_body($response), true)['data']['data']);
+  return json_decode(wp_remote_retrieve_body($response), true)['data']['data'];
+}
+
+function pt_hms_get_cities() {
+  $url = get_base_url() . "/aladdin/api/v1/countries/1/city-list";
+  $token = pt_hms_get_token();
+
+  $args = array(
+      'headers' => array(
+          'Authorization' => 'Bearer ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+      )
+  );
+
+  $response = wp_remote_get($url, $args);
+  return json_decode(wp_remote_retrieve_body($response), true);
+}
+
+
+function pt_hms_get_zones($city_id) {
+  $url = get_base_url() . "/aladdin/api/v1/cities/" . $city_id . "/zone-list";
+  $token = pt_hms_get_token();
+
+  $args = array(
+      'headers' => array(
+          'Authorization' => 'Bearer ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+      )
+  );
+
+  $response = wp_remote_get($url, $args);
+  return json_decode(wp_remote_retrieve_body($response), true);
+}
+
+
+function pt_hms_get_areas($zone_id) {
+  $url = get_base_url() . "/aladdin/api/v1/zones/" . $zone_id . "/area-list";
+  $token = pt_hms_get_token();
+
+  $args = array(
+      'headers' => array(
+          'Authorization' => 'Bearer ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+      )
+  );
+
+  $response = wp_remote_get($url, $args);
+  return json_decode(wp_remote_retrieve_body($response), true);
+}
+
+// $store = get_store();
+// $cities = get_cities();
+// $zones = get_zones(1); // replace 1 with the actual city ID
+// $areas = get_areas(1); // replace 1 with the actual zone ID
