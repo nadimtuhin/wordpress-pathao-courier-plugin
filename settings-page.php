@@ -44,11 +44,20 @@ function pt_hms_menu_page()
 // Render the settings page
 function pt_hms_settings_page()
 {
-    $token = pt_hms_get_token();
-?>
+    $options = get_option('pt_hms_settings');
+    $all_fields_filled = isset(
+        $options['client_id'], 
+        $options['client_secret'], 
+        $options['username'], 
+        $options['password'], 
+        $options['environment']
+    );
+
+    $token = $all_fields_filled ? pt_hms_get_token() : null;
+    ?>
     <div class="wrap">
         <h2>Pathao Courier Settings</h2>
-        <?php if(!$token):?>
+        <?php if($all_fields_filled && !$token):?>
         <div class="notice notice-error">
             <p>API credentials are invalid. Please check your credentials and try again.</p>
         </div>
