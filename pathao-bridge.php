@@ -139,7 +139,7 @@ function pt_hms_get_cities() {
   );
 
   $response = wp_remote_get($url, $args);
-  return json_decode(wp_remote_retrieve_body($response), true);
+  return json_decode(wp_remote_retrieve_body($response), true)['data']['data'];
 }
 
 
