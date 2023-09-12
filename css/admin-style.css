@@ -15,7 +15,7 @@
 .pt_hms_order_modal .modal-content {
     margin: auto;
     padding: 20px;
-    width: 40%;
+    width: 80%;
     max-height: 70vh;
     background-color: #fefefe;
     border: 1px solid #888;
@@ -73,3 +73,12 @@
 .form-group label {
     margin-right: 10px;
 }
+
+.row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-group {
+    flex: 1;
+    margin-right: 10px;
+  }

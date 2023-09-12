@@ -180,3 +180,46 @@ function pt_hms_get_areas($zone_id) {
 // $cities = get_cities();
 // $zones = get_zones(1); // replace 1 with the actual city ID
 // $areas = get_areas(1); // replace 1 with the actual zone ID
+
+
+function pt_hms_create_new_order($order_data) {
+  $api_url = get_base_url().'/aladdin/api/v1/orders';
+  $token = pt_hms_get_token();
+
+  $args = array(
+      'headers' => array(
+          'Authorization' => 'Bearer ' . $token,
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json'
+      ),
+      'body' => json_encode(array(
+          'store_id' => $order_data['store_id'],
+          'merchant_order_id' => $order_data['merchant_order_id'],
+          'sender_name' => $order_data['sender_name'],
+          'sender_phone' => $order_data['sender_phone'],
+          'recipient_name' => $order_data['recipient_name'],
+          'recipient_phone' => $order_data['recipient_phone'],
+          'recipient_address' => $order_data['recipient_address'],
+          'recipient_city' => $order_data['recipient_city'],
+          'recipient_zone' => $order_data['recipient_zone'],
+          'recipient_area' => $order_data['recipient_area'],
+          'delivery_type' => $order_data['delivery_type'],
+          'item_type' => $order_data['item_type'],
+          'special_instruction' => $order_data['special_instruction'],
+          'item_quantity' => $order_data['item_quantity'],
+          'item_weight' => $order_data['item_weight'],
+          'amount_to_collect' => $order_data['amount_to_collect'],
+          'item_description' => $order_data['item_description']
+      ))
+  );
+
+  $response = wp_remote_post($api_url, $args);
+
+  if (is_wp_error($response)) {
+      return $response->get_error_message();
+  }
+
+  $body = wp_remote_retrieve_body($response);
+
+  return json_decode($body, true);
+}

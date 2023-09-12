@@ -13,9 +13,10 @@ function add_store_column_to_order_list($columns) {
 }
 
 function populate_store_column($column, $post_id) {
-    if ($column === 'pathao') {
-        echo render_store_modal_button($post_id) . render_store_modal_content();
-    }
+  if ($column === 'pathao') {
+      $order = wc_get_order($post_id);
+      echo render_store_modal_button($post_id, $order) . render_store_modal_content($order);
+  }
 }
 
 function render_store_modal_button($post_id) {
@@ -26,25 +27,69 @@ function render_form_group($label, $input) {
     return sprintf('<div class="form-group"><label for="%1$s">%1$s:</label>%2$s</div>', $label, $input);
 }
 
-function render_store_modal_content() {
-    ob_start();
-    ?>
-    <div id="custom-modal" class="modal pt_hms_order_modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Set store, address, and price</h2>
-            <?php
-            echo render_form_group('Price', '<input type="text" id="price" name="price">');
-            echo render_stores_dropdown();
-            echo render_cities_dropdown();
-            echo render_additional_fields();
+
+function render_store_modal_content($order = null) {
+  $order_data = $order->get_data();
+  $order_billing_address   = $order_data['billing']['address_1'];
+  $order_shipping_city     = $order_data['billing']['city'];
+  $order_shipping_postcode = $order_data['billing']['postcode'];
+  $order_note              = $order->get_customer_note();
+  $recipient_address = $order_billing_address . ',' . $order_shipping_city . '-' . $order_shipping_postcode;
+
+  ob_start();
+  ?>
+  <div id="custom-modal" class="modal pt_hms_order_modal" style="display: none;">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Send this through pathao courier</h2>
+          <hr>
+          <?php if ($order): 
+            
             ?>
-            <button id="submit-button">Submit</button>
-        </div>
-    </div>
-    <?php
-    return ob_get_clean();
+              <div class="order-info">
+                  <h3>Order Information</h3>
+                  <p><strong>Total Price:</strong> <?= wc_price($order->get_total()); ?></p>
+                  <h4>Order Items:</h4>
+                  <ul>
+                      <?php foreach ($order->get_items() as $item): ?>
+                          <li><?= $item->get_name(); ?> x <?= $item->get_quantity(); ?></li>
+                      <?php endforeach; ?>
+                  </ul>
+              </div>
+              <hr>
+          <?php endif; ?>
+
+          <div class="courier-settings">
+            <div class="row">
+                <?= render_form_group('Name', '<input type="text" id="name" name="name" value="' . $order->get_formatted_billing_full_name() . '">'); ?>
+                <?= render_form_group('Phone', '<input type="text" id="phone" name="phone" value="' . $order->get_billing_phone() . '">'); ?>
+            </div>
+            <div class="row">
+              <?= render_stores_dropdown(); ?>
+              <?= render_item_type_dropdown(); ?>
+              <?= render_order_type_dropdown(); ?>
+            </div>
+            <div class="row">
+              <?= render_form_group('Order Number', '<input type="text" id="order_number" name="order_number" value="' . $order->get_order_number() . '" readonly>'); ?>
+              <?= render_form_group('Price', '<input type="text" id="price" name="price">'); ?>
+              <?= render_form_group('Weight', '<input type="text" id="weight" name="weight">'); ?>
+              <?= render_form_group('Quantity', '<input type="number" id="quantity" name="quantity">'); ?>
+            </div>
+            <div class="row">
+              <?= render_form_group('Address', '<textarea id="address" name="address">' . $recipient_address . '</textarea>'); ?>
+              <?= render_cities_dropdown(); ?>
+              <?= render_form_group('Zone', '<select id="zone" name="zone"><option>Select zone</option></select>'); ?>
+              <?= render_form_group('Area', '<select id="area" name="area"><option>Select area</option></select>'); ?>
+           </div>
+          </div>
+          <button id="submit-button" type="button">Send with pathao courier</button>
+      </div>
+  </div>
+  <?php
+  return ob_get_clean();
 }
+
+
 
 function render_stores_dropdown() {
     // Simulated database query
@@ -70,11 +115,32 @@ function render_cities_dropdown() {
     return render_form_group('City', $select);
 }
 
-function render_additional_fields() {
-    return render_form_group('Zone', '<select id="zone" name="zone">
-    <option>Select zone</option>
-    </select>') .
-           render_form_group('Area', '<select id="area" name="area">
-    <option>Select area</option>
-           </select>');
+function render_item_type_dropdown() {
+  $item_types = [
+      ['type_id' => '2', 'type_name' => 'Parcel'],
+      ['type_id' => '1', 'type_name' => 'Document'],
+  ];
+
+  $options = array_map(
+      fn($item) => sprintf("<option value='%s'>%s</option>", $item['type_id'], $item['type_name']),
+      $item_types
+  );
+
+  $select = sprintf("<select id='item_type' name='item_type'>%s</select>", implode('', $options));
+  return render_form_group('Item Type', $select);
+}
+
+function render_order_type_dropdown() {
+  $order_types = [
+      ['order_type_id' => '48', 'order_type_name' => 'Normal'],
+      ['order_type_id' => '12', 'order_type_name' => 'On Demand']
+  ];
+
+  $options = array_map(
+      fn($type) => sprintf("<option value='%s'>%s</option>", $type['order_type_id'], $type['order_type_name']),
+      $order_types
+  );
+
+  $select = sprintf("<select id='order_type' name='order_type'>%s</select>", implode('', $options));
+  return render_form_group('Order Type', $select);
 }
