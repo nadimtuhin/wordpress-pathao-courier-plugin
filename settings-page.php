@@ -1,10 +1,11 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 // Register AJAX action
 add_action('wp_ajax_get_token', 'ajax_get_token');
 
-function ajax_get_token() {
+function ajax_get_token()
+{
     $token = pt_hms_get_token();
     if ($token) {
         wp_send_json_success(array('access_token' => $token));
@@ -17,34 +18,36 @@ function ajax_get_token() {
 add_action('admin_menu', 'pt_hms_menu_page');
 
 // Admin menu callback
-function pt_hms_menu_page() {
+function pt_hms_menu_page()
+{
     add_menu_page(
-        'Pathao Courier Settings', 
-        'Pathao Courier', 
-        'manage_options', 
-        'pt_hms_settings', 
-        'pt_hms_settings_page', 
-        'dashicons-move', 
+        'Pathao Courier Settings',
+        'Pathao Courier',
+        'manage_options',
+        'pt_hms_settings',
+        'pt_hms_settings_page',
+        'dashicons-move',
         6
     );
 }
 
 // Render the settings page
-function pt_hms_settings_page() {
-    ?>
+function pt_hms_settings_page()
+{
+?>
     <div class="wrap">
         <h2>Pathao Courier Settings</h2>
         <form method="post" action="options.php">
-            <?php 
-                settings_fields('pt_hms_settings_group');
-                do_settings_sections('pt_hms_settings');
-                submit_button(); 
+            <?php
+            settings_fields('pt_hms_settings_group');
+            do_settings_sections('pt_hms_settings');
+            submit_button();
             ?>
         </form>
         <!-- Token Fetch Button -->
         <section>
             <h3>Test Credentials</h3>
-            <button type="button" id="fetch-token-btn">Fetch Token</button>
+            <button type="button" id="fetch-token-btn">Test credentials validity</button>
         </section>
         <!-- JavaScript for AJAX call -->
         <script type="text/javascript">
@@ -58,7 +61,7 @@ function pt_hms_settings_page() {
                         },
                         success: function(response) {
                             if (response.success) {
-                                alert('Token: ' + response.data.access_token);
+                                alert('API credentials valid');
                             } else {
                                 alert('Error: ' + response.data.message);
                             }
@@ -71,14 +74,15 @@ function pt_hms_settings_page() {
             });
         </script>
     </div>
-    <?php
+<?php
 }
 
 // Admin init setup
 add_action('admin_init', 'pt_hms_settings_init');
 
 // Admin init callback
-function pt_hms_settings_init() {
+function pt_hms_settings_init()
+{
     register_setting('pt_hms_settings_group', 'pt_hms_settings');
 
     // API Credentials
@@ -90,40 +94,45 @@ function pt_hms_settings_init() {
     add_settings_field('environment', 'Environment', 'field_environment_callback', 'pt_hms_settings', 'section_one');
 }
 
-function section_one_callback() {
+function section_one_callback()
+{
     echo 'Enter your API credentials below:';
 }
 
-function field_client_id_callback() {
-  $options = get_option('pt_hms_settings');
-  $value = is_array($options) && isset($options['client_id']) ? $options['client_id'] : '';
-  echo "<input type='text' name='pt_hms_settings[client_id]' value='{$value}' style='width: 300px;' />";
+function field_client_id_callback()
+{
+    $options = get_option('pt_hms_settings');
+    $value = is_array($options) && isset($options['client_id']) ? $options['client_id'] : '';
+    echo "<input type='text' name='pt_hms_settings[client_id]' value='{$value}' style='width: 300px;' />";
 }
 
-function field_client_secret_callback() {
-  $options = get_option('pt_hms_settings');
-  $value = is_array($options) && isset($options['client_secret']) ? $options['client_secret'] : '';
-  echo "<input type='password' name='pt_hms_settings[client_secret]' value='{$value}' style='width: 300px;' />";
+function field_client_secret_callback()
+{
+    $options = get_option('pt_hms_settings');
+    $value = is_array($options) && isset($options['client_secret']) ? $options['client_secret'] : '';
+    echo "<input type='password' name='pt_hms_settings[client_secret]' value='{$value}' style='width: 300px;' />";
 }
 
-function field_username_callback() {
-  $options = get_option('pt_hms_settings');
-  $value = is_array($options) && isset($options['username']) ? $options['username'] : '';
-  echo "<input type='text' name='pt_hms_settings[username]' value='{$value}' style='width: 300px;' />";
+function field_username_callback()
+{
+    $options = get_option('pt_hms_settings');
+    $value = is_array($options) && isset($options['username']) ? $options['username'] : '';
+    echo "<input type='text' name='pt_hms_settings[username]' value='{$value}' style='width: 300px;' />";
 }
 
-function field_password_callback() {
-  $options = get_option('pt_hms_settings');
-  $value = is_array($options) && isset($options['password']) ? $options['password'] : '';
-  echo "<input type='password' name='pt_hms_settings[password]' value='{$value}' style='width: 300px;' />";
+function field_password_callback()
+{
+    $options = get_option('pt_hms_settings');
+    $value = is_array($options) && isset($options['password']) ? $options['password'] : '';
+    echo "<input type='password' name='pt_hms_settings[password]' value='{$value}' style='width: 300px;' />";
 }
 
-function field_environment_callback() {
-  $options = get_option('pt_hms_settings');
-  $selected = is_array($options) && isset($options['environment']) ? $options['environment'] : '';
-  echo "<select name='pt_hms_settings[environment]' style='width: 300px;'>
+function field_environment_callback()
+{
+    $options = get_option('pt_hms_settings');
+    $selected = is_array($options) && isset($options['environment']) ? $options['environment'] : '';
+    echo "<select name='pt_hms_settings[environment]' style='width: 300px;'>
       <option value='live' " . selected($selected, 'live', false) . ">Live</option>
       <option value='staging' " . selected($selected, 'staging', false) . ">Staging</option>
   </select>";
 }
-
