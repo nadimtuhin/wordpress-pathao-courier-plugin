@@ -30,5 +30,12 @@ function enqueue_custom_admin_script() {
     wp_localize_script('my-custom-script', 'ajax_params', array('ajax_url' => admin_url('admin-ajax.php')));
     
     wp_enqueue_style('my-custom-admin-css', plugin_dir_url(__FILE__) . 'css/admin-style.css');
-    wp_enqueue_script('my-custom-admin-js', plugin_dir_url(__FILE__) . 'js/admin-script.js', array('jquery'), null, true);
+    // wp_enqueue_script('my-custom-admin-js', plugin_dir_url(__FILE__) . 'js/admin-script.js', array('jquery'), null, true);
+    wp_enqueue_script(
+        'my-custom-admin-js',
+        plugin_dir_url(__FILE__) . 'js/admin-script.js',
+        ['jquery'],
+        filemtime(plugin_dir_path( __FILE__ ) . '/js/admin-script.js'),
+        true
+    );
 }
