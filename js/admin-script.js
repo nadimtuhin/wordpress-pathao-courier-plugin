@@ -1,17 +1,22 @@
-jQuery(document).ready(function($) {
-  $('.open-modal-button').on('click', function(e) {
-      var orderID = $(this).data('order-id');
-      $('#order-id-field').val(orderID);  // Set the Order ID in a hidden field
-      $('#custom-modal').show();
-      e.preventDefault();
-  });
+jQuery(document).ready(function ($) {
 
-  $('.close').on('click', function() {
+    $('.column-pathao').on('click', function (e) {
+        e.preventDefault();
+    });
+
+    $('.open-modal-button').on('click', function (e) {
+        var orderID = $(this).data('order-id');
+        $('#order_number').val(orderID);  // Set the Order ID in a hidden field
+        $('#custom-modal').show();
+        e.preventDefault();
+    });
+
+    $('.close').on('click', function () {
         $('#custom-modal').hide();
     });
 
     // Close the modal if clicked outside the modal content
-    $('#custom-modal').on('click', function(e) {
+    $('#custom-modal').on('click', function (e) {
         if ($(e.target).closest('.modal-content').length === 0) {
             $('#custom-modal').hide();
         }
@@ -20,35 +25,35 @@ jQuery(document).ready(function($) {
 });
 
 
-jQuery(document).ready(function($) {
-    $('#city').change(function() {
+jQuery(document).ready(function ($) {
+    $('#city').change(function () {
         $('#zone').html('<option value="">Select Zone</option>');
         $('#area').html('<option value="">Select Area</option>');
         const city_id = $(this).val();
         $.post(ajaxurl, {
             action: 'get_zones',
             city_id: city_id
-        }, function(response) {
+        }, function (response) {
             const zones = response.data.data.data;
             let options = '<option value="">Select Zone</option>';
-            zones.forEach(function(zone) {
+            zones.forEach(function (zone) {
                 options += `<option value="${zone.zone_id}">${zone.zone_name}</option>`;
             });
             $('#zone').html(options);
         });
     });
 
-    $('#zone').change(function() {
+    $('#zone').change(function () {
         $('#area').html('<option value="">Select Area</option>');
 
         const zone_id = $(this).val();
         $.post(ajaxurl, {
             action: 'get_areas',
             zone_id: zone_id
-        }, function(response) {
+        }, function (response) {
             const areas = response.data.data.data;
             let options = '<option value="">Select Area</option>';
-            areas.forEach(function(area) {
+            areas.forEach(function (area) {
                 options += `<option value="${area.area_id}">${area.area_name}</option>`;
             });
             $('#area').html(options);
@@ -56,10 +61,10 @@ jQuery(document).ready(function($) {
     });
 });
 
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
 
     // Initialize click event for submit button
-    $("#submit-button").on("click", function(e) {
+    $("#submit-button").on("click", function (e) {
         // Gather form data
         const orderData = {
             merchant_order_id: $("#order_number").val(),
@@ -88,14 +93,14 @@ jQuery(document).ready(function($) {
                 action: "create_order",  // This should match the action hook in WordPress
                 order_data: orderData
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
                     alert("Order successfully created!");
                 } else {
                     alert("Error: " + response.data);
                 }
             },
-            error: function() {
+            error: function () {
                 alert("Something went wrong!");
             }
         });
