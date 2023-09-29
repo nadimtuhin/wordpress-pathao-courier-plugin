@@ -6,12 +6,8 @@ add_action('wp_ajax_get_cities', 'pt_hms_ajax_get_cities');
 add_action('wp_ajax_get_zones', 'pt_hms_ajax_get_zones');
 add_action('wp_ajax_get_areas', 'pt_hms_ajax_get_areas');
 add_action('wp_ajax_create_order', 'ajax_pt_hms_create_new_order');
-add_action('rest_api_init', function () {
-    register_rest_route(PTC_PLUGIN_PREFIX . '/v1', '/products/(?P<id>\d+)', array(
-        'methods' => 'GET',
-        'callback' => 'product_details_callback',
-    ));
-});
+add_action('wp_ajax_get_wc_order', 'ajax_pt_wc_order_details');
+
 
 function pt_hms_ajax_get_stores()
 {
@@ -65,9 +61,15 @@ function ajax_pt_hms_create_new_order()
     die();
 }
 
-function product_details_callback(WP_REST_Request $request)
+
+function ajax_pt_wc_order_details()
 {
-    $orderId =  $request->get_param('id');
+
+    $orderId =  $_POST['order_id'] ?? null;
+
+    if (!$orderId) {
+        return new WP_Error('no_order_id', 'No order id found', array('status' => 404));
+    }
 
     $orderData = wc_get_order($orderId);
 
