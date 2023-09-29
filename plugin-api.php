@@ -71,6 +71,10 @@ function product_details_callback(WP_REST_Request $request)
 
     $orderData = wc_get_order($orderId);
 
+    if (!$orderData) {
+        return new WP_Error('no_order', 'No order found', array('status' => 404));
+    }
+
     wp_send_json_success($orderData->get_data());
 }
 
