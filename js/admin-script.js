@@ -6,8 +6,9 @@ jQuery(document).ready(function ($) {
 
     $('.open-modal-button').on('click', function (e) {
         var orderID = $(this).data('order-id');
-        $('#order_number').val(orderID);  // Set the Order ID in a hidden field
+        $('#ptc_wc_order_number').val(orderID);  // Set the Order ID in a hidden field
         $('#custom-modal').show();
+        populateModalData(orderID);
         e.preventDefault();
     });
 
@@ -21,6 +22,47 @@ jQuery(document).ready(function ($) {
             $('#custom-modal').hide();
         }
     });
+
+    populateModalData = function (orderID) { 
+
+        const nameInput = $('#ptc_wc_order_name');
+        const phoneInput = $('#ptc_wc_order_phone');
+        const shippingAddressInput = $('#ptc_wc_shipping_address');
+        const totalPriceDom = $('#ptc_wc_order_total_price');
+        const orderItemsDom = $('#ptc_wc_order_items');
+
+        $.post(ajaxurl, {
+            action: 'get_wc_order',
+            order_id: orderID
+        }, function (response) {
+            const order = response.data;
+            
+            nameInput.val(order.billing.full_name);
+            phoneInput.val(order.billing.phone);
+            shippingAddressInput.val(`${ order?.shipping?.address_1 }, ${ order?.shipping?.address_2 }, ${ order?.shipping?.city }, ${ order?.shipping?.state }, ${ order?.shipping?.postcode}`);
+            
+            totalPriceDom.append(`${order.total} ${order.currency}`);
+
+
+            let orderItems = '';
+
+            order.items.forEach(function (item) {
+                orderItems += `
+                <li> 
+                    <img width="40px" src="${item.image}" /> 
+                    ${item.name}, 
+                    Price: ${item.price} ${order.currency}, 
+                    Quantity: ${item.quantity}  
+                    <a href="${item.product_url}">Detail</a>
+                </li>`;
+            });
+
+            orderItemsDom.append(orderItems);
+
+            
+        });
+    }
+
 
 });
 

@@ -42,14 +42,14 @@ function render_store_modal_content($order = null)
     //   $order_note              = $order->get_customer_note();
     //   $recipient_address = $order_billing_address . ',' . $order_shipping_city . '-' . $order_shipping_postcode;
 
-    $nameForm = render_form_group('Name', '<input type="text" id="name" name="name" value="$order->get_formatted_billing_full_name()">');
-    $phoneForm = render_form_group('Phone', '<input type="text" id="phone" name="phone" value="$order->get_billing_phone()">');
+    $nameForm = render_form_group('Name', '<input type="text" id="ptc_wc_order_name" name="name" value="">');
+    $phoneForm = render_form_group('Phone', '<input type="text" id="ptc_wc_order_phone" name="phone" value="">');
 
-    $orderNumber = render_form_group('Order Number', '<input type="text" id="order_number" name="order_number" value="$order->get_order_number()" readonly>');
+    $orderNumber = render_form_group('Order Number', '<input type="text" id="ptc_wc_order_number" name="order_number" value="" readonly>');
     $priceForm = render_form_group('Price', '<input type="text" id="price" name="price">');
     $weightForm = render_form_group('Weight', '<input type="text" id="weight" name="weight">');
     $quantityForm = render_form_group('Quantity', '<input type="number" id="quantity" name="quantity">');
-    $addressForm = render_form_group('Address', '<textarea id="address" name="address">$recipient_address</textarea>');
+    $addressForm = render_form_group('Address', '<textarea id="ptc_wc_shipping_address" name="address"></textarea>');
 
     $citiesForm = render_cities_dropdown();
     $zoneForm = render_form_group('Zone', '<select id="zone" name="zone"><option>Select zone</option></select>');
@@ -67,12 +67,9 @@ function render_store_modal_content($order = null)
             ?>
               <div class="order-info">
                   <h3>Order Information</h3>
-                  <p><strong>Total Price:</strong> <?= wc_price($order->get_total()); ?></p>
+                  <p><strong>Total Price:</strong> <span id="ptc_wc_order_total_price"> </span> </p>
                   <h4>Order Items:</h4>
-                  <ul>
-                      <?php foreach ($order->get_items() as $item): ?>
-                          <li><?= $item->get_name(); ?> x <?= $item->get_quantity(); ?></li>
-                      <?php endforeach; ?>
+                  <ul id="ptc_wc_order_items">
                   </ul>
               </div>
               <hr>
