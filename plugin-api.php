@@ -78,8 +78,14 @@ function ajax_pt_wc_order_details()
     }
 
     $orderData = $order->get_data();
+    $orderItems = 0;
     // add items to order
-    $orderData['items'] = array_values(array_map(function($item) {
+    $orderData['items'] = array_values(array_map(function($item) use (&$orderItems) {
+
+        $quantity = $item->get_quantity();
+
+        $orderItems += $quantity;
+
         return [
             'name' => $item->get_name(),
             'quantity' => $item->get_quantity(),
@@ -92,6 +98,8 @@ function ajax_pt_wc_order_details()
     }, $order->get_items()));
 
     $orderData['billing']['full_name'] = $order->get_formatted_billing_full_name();
+    
+    $orderData['total_items'] = $orderItems;
 
     wp_send_json_success($orderData);
 }

@@ -77,8 +77,14 @@
 .row {
     display: flex;
     justify-content: space-between;
-  }
-  .form-group {
+}
+
+.form-group {
     flex: 1;
     margin-right: 10px;
-  }
+}
+
+.column-pathao .open-modal-button {
+    cursor: pointer;
+
+}

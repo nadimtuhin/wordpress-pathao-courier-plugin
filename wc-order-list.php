@@ -68,7 +68,7 @@ function render_store_modal_content($order = null)
               <div class="order-info">
                   <h3>Order Information</h3>
                   <p><strong>Total Price:</strong> <span id="ptc_wc_order_total_price"> </span> </p>
-                  <h4>Order Items:</h4>
+                  <h4>Order Items: <span id="ptc_wc_total_order_items"></span></h4>
                   <ul id="ptc_wc_order_items">
                   </ul>
               </div>
