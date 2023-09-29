@@ -64,20 +64,36 @@ function ajax_pt_hms_create_new_order()
 
 function ajax_pt_wc_order_details()
 {
-
+    
     $orderId =  $_POST['order_id'] ?? null;
 
     if (!$orderId) {
         return new WP_Error('no_order_id', 'No order id found', array('status' => 404));
     }
 
-    $orderData = wc_get_order($orderId);
+    $order = wc_get_order($orderId);
 
-    if (!$orderData) {
+    if (!$order) {
         return new WP_Error('no_order', 'No order found', array('status' => 404));
     }
 
-    wp_send_json_success($orderData->get_data());
+    $orderData = $order->get_data();
+    // add items to order
+    $orderData['items'] = array_values(array_map(function($item) {
+        return [
+            'name' => $item->get_name(),
+            'quantity' => $item->get_quantity(),
+            'price' => $item->get_total(),
+            'product_id' => $item->get_product_id(),
+            'variation_id' => $item->get_variation_id(),
+            'image' => wp_get_attachment_image_src($item->get_product()->get_image_id(), 'thumbnail')[0],
+            'product_url' => $item->get_product()->get_permalink(),
+        ];
+    }, $order->get_items()));
+
+    $orderData['billing']['full_name'] = $order->get_formatted_billing_full_name();
+
+    wp_send_json_success($orderData);
 }
 
 
