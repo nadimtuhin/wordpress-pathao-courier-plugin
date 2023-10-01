@@ -33,7 +33,7 @@ function render_form_group($label, $input)
 }
 
 
-function render_store_modal_content($order = null)
+function render_store_modal_content()
 {
 
     $nameForm = render_form_group('Name', '<input type="text" id="ptc_wc_order_name" name="name" value="">');

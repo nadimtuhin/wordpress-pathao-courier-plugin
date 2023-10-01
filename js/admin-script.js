@@ -92,6 +92,43 @@ jQuery(document).ready(function ($) {
         totalQuantityInput.val('');
     }
 
+    $('#ptc-submit-button').on('click', function () {
+       // get form data
+        const orderData = {
+            merchant_order_id: $('#ptc_wc_order_number').val(),
+            sender_name: $('#ptc_wc_order_name').val(),
+            sender_phone: $('#ptc_wc_order_phone').val().replace('+88'),
+            recipient_name: $('#ptc_wc_order_name').val(),
+            recipient_phone: $('#ptc_wc_order_phone').val().replace('+88'),
+            recipient_address: $('#ptc_wc_shipping_address').val(),
+            recipient_city: $('#city').val(),
+            recipient_zone: $('#zone').val(),
+            recipient_area: $('#area').val(),
+            amount_to_collect: $('#ptc_wc_order_price').val(),
+            store_id: $('#store').val(),
+            delivery_type: 48, // Replace with actual delivery type
+            item_type: 2, // Replace with actual item type
+            item_quantity: totalQuantityInput.val(),
+            item_weight: totalWeightInput.val(),
+            amount_to_collect: +$('#ptc_wc_order_price').val(),
+        };
+
+        $.ajax({
+            url: ajaxurl,
+            data: {
+                action: "create_order_to_ptc",
+                order_data: orderData
+            },
+            success: function (response) {
+               console.log(response);
+            },
+            error: function () {
+                alert("Something went wrong!");
+            }
+        });
+
+    });
+
 });
 
 
