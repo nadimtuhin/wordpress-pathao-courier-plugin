@@ -68,38 +68,43 @@ function ajax_pt_wc_order_details()
     $orderId =  $_POST['order_id'] ?? null;
 
     if (!$orderId) {
-        return new WP_Error('no_order_id', 'No order id found', array('status' => 404));
+        return wp_send_json_error('no_order_id', 'No order id found', 404);
     }
 
     $order = wc_get_order($orderId);
 
     if (!$order) {
-        return new WP_Error('no_order', 'No order found', array('status' => 404));
+        return wp_send_json_error('no_order', 'No order found', 404);
     }
 
     $orderData = $order->get_data();
     $orderItems = 0;
+    $totalWeight = 0;
     // add items to order
-    $orderData['items'] = array_values(array_map(function($item) use (&$orderItems) {
+    $orderData['items'] = array_values(array_map(function($item) use (&$orderItems, &$totalWeight) {
 
         $quantity = $item->get_quantity();
+        $totalWeight += (float)$item->get_product()->get_weight();
 
         $orderItems += $quantity;
 
         return [
             'name' => $item->get_name(),
             'quantity' => $item->get_quantity(),
+            'weight' => $totalWeight,
             'price' => $item->get_total(),
             'product_id' => $item->get_product_id(),
             'variation_id' => $item->get_variation_id(),
-            'image' => wp_get_attachment_image_src($item->get_product()->get_image_id(), 'thumbnail')[0],
+            'image' => wp_get_attachment_image_src($item->get_product()->get_image_id(), 'thumbnail')[0] ?? null,
             'product_url' => $item->get_product()->get_permalink(),
         ];
+
     }, $order->get_items()));
 
     $orderData['billing']['full_name'] = $order->get_formatted_billing_full_name();
     
     $orderData['total_items'] = $orderItems;
+    $orderData['total_weight'] = $totalWeight;
 
     wp_send_json_success($orderData);
 }

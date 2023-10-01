@@ -7,6 +7,9 @@ jQuery(document).ready(function ($) {
     const phoneInput = $('#ptc_wc_order_phone');
     const shippingAddressInput = $('#ptc_wc_shipping_address');
     const totalPriceDom = $('#ptc_wc_order_total_price');
+    const totalPriceInput = $('#ptc_wc_order_price');
+    const totalWeightInput = $('#ptc_wc_order_weight');
+    const totalQuantityInput = $('#ptc_wc_order_quantity');
     const orderItemsDom = $('#ptc_wc_order_items');
     const orderTotalItemsDom = $('#ptc_wc_total_order_items');
 
@@ -53,6 +56,9 @@ jQuery(document).ready(function ($) {
             shippingAddressInput.val(`${orderData?.shipping?.address_1}, ${orderData?.shipping?.address_2}, ${orderData?.shipping?.city}, ${orderData?.shipping?.state}, ${orderData?.shipping?.postcode}`);
 
             totalPriceDom.html(`${orderData.total} ${orderData.currency}`);
+            totalPriceInput.val(orderData.total);
+            totalWeightInput.val(orderData.total_weight);
+            totalQuantityInput.val(orderData.total_items);
 
             let orderItems = '';
 
@@ -81,6 +87,9 @@ jQuery(document).ready(function ($) {
         totalPriceDom.html('');
         orderItemsDom.html('');
         orderTotalItemsDom.html('');
+        totalPriceInput.val('');
+        totalWeightInput.val('');
+        totalQuantityInput.val('');
     }
 
 });
