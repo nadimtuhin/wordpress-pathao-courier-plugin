@@ -53,16 +53,24 @@
     flex: 1;
 }
 
-.pt_hms_order_modal button#submit-button {
+.pt_hms_order_modal button#ptc-submit-button {
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.pt_hms_order_modal textarea#ptc_wc_shipping_address {
+    width: 100%;
 }
 
 .pt_hms_order_modal button#submit-button:hover {
     background-color: #45a049;
 }
+
+
 
 .form-group {
     display: flex;

@@ -45,11 +45,12 @@ function render_store_modal_content($order = null)
     $quantityForm = render_form_group('Quantity', '<input type="number" id="quantity" name="quantity">');
     $addressForm = render_form_group('Address', '<textarea id="ptc_wc_shipping_address" name="address"></textarea>');
 
-    $citiesForm = render_form_group('City', '<select id="city" name="zone"><option>Select city</option></select>');
+    $storeForm = render_form_group('Store', '<select id="store" name="store"><option>Select store</option></select>');
+    $citiesForm = render_form_group('City', '<select id="city" name="city"><option>Select city</option></select>');
     $zoneForm = render_form_group('Zone', '<select id="zone" name="zone"><option>Select zone</option></select>');
     $areaForm = render_form_group('Area', '<select id="area" name="area"><option>Select area</option></select>');
 
-    
+
     echo
     '<div id="custom-modal" class="modal pt_hms_order_modal" style="display: none;">
       <div class="modal-content">
@@ -86,13 +87,17 @@ function render_store_modal_content($order = null)
               ' . $quantityForm . '
             </div>
             <div class="row">
-              ' . $addressForm . '
+            ' . $addressForm . '
+            ' . $storeForm . '
+            </div>
+            <div class="row">
+          
               ' . $citiesForm . '
               ' . $zoneForm . '
               ' . $areaForm . '
            </div>
           </div>
-          <button id="submit-button" type="button">Send with pathao courier</button>
+          <button id="ptc-submit-button" type="button">Send with pathao courier</button>
       </div>
   </div>';
 }
@@ -110,5 +115,3 @@ function render_stores_dropdown()
     $select = sprintf("<select id='store' name='store'>%s</select>", implode('', $options));
     return render_form_group('Store', $select);
 }
-
-

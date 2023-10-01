@@ -101,6 +101,19 @@ jQuery(document).ready(function ($) {
         $('#city').html(options);
     });
 
+    $.post(ajaxurl, {
+        action: 'get_stores',
+    }, function (response) {
+        const stores = response.data;
+
+        let options = '<option value="">Select store</option>';
+        stores.forEach(function (store) {
+            options += `<option value="${store.store_id}">${store.store_name}</option>`;
+        });
+
+        $('#store').html(options);
+    });
+
 
     $('#city').change(function () {
         $('#zone').html('<option value="">Select Zone</option>');

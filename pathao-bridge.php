@@ -122,8 +122,8 @@ function pt_hms_get_stores() {
   );
 
   $response = wp_remote_get($url, $args);
-  // var_dump(json_decode(wp_remote_retrieve_body($response), true)['data']['data']);
-  return json_decode(wp_remote_retrieve_body($response), true)['data']['data'];
+
+  return json_decode(wp_remote_retrieve_body($response), true)['data']['data'] ?? [];
 }
 
 function pt_hms_get_cities() {
@@ -175,12 +175,6 @@ function pt_hms_get_areas($zone_id) {
   $response = wp_remote_get($url, $args);
   return json_decode(wp_remote_retrieve_body($response), true);
 }
-
-// $store = get_store();
-// $cities = get_cities();
-// $zones = get_zones(1); // replace 1 with the actual city ID
-// $areas = get_areas(1); // replace 1 with the actual zone ID
-
 
 function pt_hms_create_new_order($order_data) {
   $api_url = get_base_url().'/aladdin/api/v1/orders';
