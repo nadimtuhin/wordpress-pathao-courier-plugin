@@ -87,6 +87,21 @@ jQuery(document).ready(function ($) {
 
 
 jQuery(document).ready(function ($) {
+
+    $.post(ajaxurl, {
+        action: 'get_cities',
+    }, function (response) {
+        const cities = response.data;
+
+        let options = '<option value="">Select city</option>';
+        cities.forEach(function (city) {
+            options += `<option value="${city.city_id}">${city.city_name}</option>`;
+        });
+
+        $('#city').html(options);
+    });
+
+
     $('#city').change(function () {
         $('#zone').html('<option value="">Select Zone</option>');
         $('#area').html('<option value="">Select Area</option>');
