@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
     const totalQuantityInput = $('#ptc_wc_order_quantity');
     const orderItemsDom = $('#ptc_wc_order_items');
     const orderTotalItemsDom = $('#ptc_wc_total_order_items');
-    const ptcModal = $('#custom-modal');
+    const ptcModal = $('#ptc-custom-modal');
 
     $('.column-pathao').on('click', function (e) {
         e.preventDefault();
@@ -99,8 +99,6 @@ jQuery(document).ready(function ($) {
         let orderId = $('#ptc_wc_order_number').val();
         const orderData = {
             merchant_order_id: orderId,
-            sender_name: $('#ptc_wc_order_name').val(),
-            sender_phone: $('#ptc_wc_order_phone').val().replace('+88'),
             recipient_name: $('#ptc_wc_order_name').val(),
             recipient_phone: $('#ptc_wc_order_phone').val().replace('+88'),
             recipient_address: $('#ptc_wc_shipping_address').val(),
@@ -130,7 +128,7 @@ jQuery(document).ready(function ($) {
 
                let consignmentId = response.data.consignment_id;
 
-               $(`[data-order-id="${orderId}"]`).parent().html(`<pre> ${consignmentId} </pre>`);
+               $(`[data-order-id="${orderId}"].ptc-open-modal-button`).parent().html(`<pre> ${consignmentId} </pre>`);
 
                ptcModal.hide();
                

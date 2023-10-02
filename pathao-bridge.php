@@ -189,8 +189,6 @@ function pt_hms_create_new_order($order_data) {
       'body' => json_encode(array(
           'store_id' => $order_data['store_id'],
           'merchant_order_id' => $order_data['merchant_order_id'],
-          'sender_name' => $order_data['sender_name'],
-          'sender_phone' => $order_data['sender_phone'],
           'recipient_name' => $order_data['recipient_name'],
           'recipient_phone' => $order_data['recipient_phone'],
           'recipient_address' => $order_data['recipient_address'],

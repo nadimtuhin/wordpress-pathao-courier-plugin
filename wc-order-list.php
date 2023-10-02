@@ -52,7 +52,7 @@ function render_store_modal_content()
 
 
     echo
-    '<div id="custom-modal" class="modal pt_hms_order_modal" style="display: none;">
+    '<div id="ptc-custom-modal" class="modal pt_hms_order_modal" style="display: none;">
       <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Send this through pathao courier</h2>
