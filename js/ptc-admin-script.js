@@ -2,6 +2,7 @@
 
 jQuery(document).ready(function ($) {
 
+
     var orderData = {}
     const nameInput = $('#ptc_wc_order_name');
     const phoneInput = $('#ptc_wc_order_phone');

@@ -26,23 +26,24 @@ require_once PTC_PLUGIN_DIR.'/wc-order-list.php';
 // Enqueue styles and scripts
 add_action('admin_enqueue_scripts', 'enqueue_custom_admin_script');
 function enqueue_custom_admin_script() {
-    // localize the script to your domain name, so that you can reference the ajax_url later
-    wp_localize_script('my-custom-admin-js', 'my_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
-    wp_localize_script('my-custom-script', 'ajax_params', array('ajax_url' => admin_url('admin-ajax.php')));
-    
+
     wp_enqueue_style(
-        'my-custom-admin-css', 
-        plugin_dir_url(__FILE__) . 'css/admin-style.css',
+        'ptc-admin-css', 
+        plugin_dir_url(__FILE__) . 'css/ptc-admin-style.css',
         null,
-        filemtime(plugin_dir_path( __FILE__ ) . '/css/admin-style.css'),
+        filemtime(plugin_dir_path( __FILE__ ) . '/css/ptc-admin-style.css'),
         'all'
     );
-    // wp_enqueue_script('my-custom-admin-js', plugin_dir_url(__FILE__) . 'js/admin-script.js', array('jquery'), null, true);
+
     wp_enqueue_script(
-        'my-custom-admin-js',
-        plugin_dir_url(__FILE__) . 'js/admin-script.js',
+        'ptc-admin-js',
+        plugin_dir_url(__FILE__) . 'js/ptc-admin-script.js',
         ['jquery'],
-        filemtime(plugin_dir_path( __FILE__ ) . '/js/admin-script.js'),
+        filemtime(plugin_dir_path( __FILE__ ) . '/js/ptc-admin-script.js'),
         true
     );
+
+    wp_localize_script( 'ptc-admin-js', 'ptcSettings', [
+        'nonce' => wp_create_nonce( 'wp_rest' )
+    ]);
 }
