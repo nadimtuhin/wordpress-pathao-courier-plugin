@@ -45,16 +45,32 @@ function pt_hms_ajax_get_areas()
 
 function ajax_pt_hms_create_new_order()
 {
+    $key = 'ptc_consignment_id';
     // Check nonce for security
-    // check_ajax_referer('create_new_order_nonce', 'nonce');
+    $nonce = wp_verify_nonce( $_SERVER['HTTP_X_WPTC_NONCE'] ?? '', 'wp_rest', false );
 
+    if(!$nonce){
 
+        wp_send_json_error([
+            'error' => 'validation_failed',
+            'message' => 'nonce mismatch'
+            ], 403);
+    }
 
+    // sanitize input fields
+    $orderData = array_map(function ($value) {
+        return sanitize_text_field(trim((string)$value));
+    }, $_POST['order_data'] ?? []);
 
-    // Collect data from POST request
-    $order_data = $_POST['order_data'];
+    $orderId = trim($orderData['merchant_order_id'] ?? '');
 
-    $orderId = $order_data['merchant_order_id'] ?? null;
+    // check order already have the consignment id
+    if (get_post_meta($orderId, $key, true)) {
+        wp_send_json_error([
+            'error' => 'validation_failed',
+            'message' => 'Order already have a consignment id'
+            ], 403);
+    }
 
     $order = wc_get_order($orderId);
 
@@ -62,19 +78,15 @@ function ajax_pt_hms_create_new_order()
         return wp_send_json_error('no_order', 'No order found', 404);
     }
 
-
     // Call your function to create a new order
-    $response = pt_hms_create_new_order($order_data);
+    $response = pt_hms_create_new_order($orderData);
 
     if (is_wp_error($response)) {
         wp_send_json_error($response->get_error_message(), $response->get_error_code());
     }
 
-   
     // add consignment_id to order meta
-
     add_post_meta($orderId, 'ptc_consignment_id', $response['data']['consignment_id']);
-
 
     // Send the response back to JavaScript
     wp_send_json($response);

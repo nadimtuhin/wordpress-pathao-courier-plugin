@@ -114,8 +114,11 @@ jQuery(document).ready(function ($) {
             amount_to_collect: +$('#ptc_wc_order_price').val(),
         };
 
-        $.ajax({
+        $.post({
             url: ajaxurl,
+            headers: {
+                'X-WPTC-Nonce': ptcSettings.nonce
+            },
             data: {
                 action: "create_order_to_ptc",
                 order_data: orderData
@@ -123,8 +126,8 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                console.log(response);
             },
-            error: function () {
-                alert("Something went wrong!");
+            error: function (response) {
+                alert(response?.responseJSON?.data?.message)
             }
         });
 
