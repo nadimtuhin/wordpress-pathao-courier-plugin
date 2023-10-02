@@ -13,16 +13,17 @@ jQuery(document).ready(function ($) {
     const totalQuantityInput = $('#ptc_wc_order_quantity');
     const orderItemsDom = $('#ptc_wc_order_items');
     const orderTotalItemsDom = $('#ptc_wc_total_order_items');
+    const ptcModal = $('#custom-modal');
 
     $('.column-pathao').on('click', function (e) {
         e.preventDefault();
     });
 
-    $('.open-modal-button').on('click', async function (e) {
+    $('.ptc-open-modal-button').on('click', async function (e) {
         e.preventDefault();
         var orderID = $(this).data('order-id');
         $('#ptc_wc_order_number').val(orderID);  // Set the Order ID in a hidden field
-        $('#custom-modal').show();
+        ptcModal.show();
         clearModalData();
         getOrderInfoAndPopulateModalData(orderID);
     });
@@ -33,9 +34,9 @@ jQuery(document).ready(function ($) {
     });
 
     // Close the modal if clicked outside the modal content
-    $('#custom-modal').on('click', function (e) {
+    ptcModal.on('click', function (e) {
         if ($(e.target).closest('.modal-content').length === 0) {
-            $('#custom-modal').hide();
+            ptcModal.hide();
             orderData = {};
         }
     });
@@ -93,10 +94,11 @@ jQuery(document).ready(function ($) {
         totalQuantityInput.val('');
     }
 
-    $('#ptc-submit-button').on('click', function () {
-       // get form data
+    $('#ptc-submit-button').on('click', function (event) {
+
+        let orderId = $('#ptc_wc_order_number').val();
         const orderData = {
-            merchant_order_id: $('#ptc_wc_order_number').val(),
+            merchant_order_id: orderId,
             sender_name: $('#ptc_wc_order_name').val(),
             sender_phone: $('#ptc_wc_order_phone').val().replace('+88'),
             recipient_name: $('#ptc_wc_order_name').val(),
@@ -125,6 +127,13 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                console.log(response);
+
+               let consignmentId = response.data.consignment_id;
+
+               $(`[data-order-id="${orderId}"]`).parent().html(`<pre> ${consignmentId} </pre>`);
+
+               ptcModal.hide();
+               
             },
             error: function (response) {
                 alert(response?.responseJSON?.data?.message)

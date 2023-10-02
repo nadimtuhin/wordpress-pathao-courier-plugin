@@ -24,7 +24,7 @@ function populate_store_column($column, $post_id)
 
 function render_store_modal_button($post_id)
 {
-    return sprintf('<button class="open-modal-button" data-order-id="%s">Send with Pathao</button>', $post_id);
+    return sprintf('<span class="ptc-assign-area"><button class="ptc-open-modal-button" data-order-id="%s">Send with Pathao</button></span>', $post_id);
 }
 
 function render_form_group($label, $input)
