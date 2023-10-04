@@ -165,7 +165,10 @@ jQuery(document).ready(function ($) {
 
         let options = '<option value="">Select store</option>';
         stores.forEach(function (store) {
-            options += `<option value="${store.store_id}">${store.store_name}</option>`;
+
+            let selected = store.is_default_store ? 'selected' : ''
+
+            options += `<option ${selected} value="${store.store_id}">${store.store_name}</option>`;
         });
 
         $('#store').html(options);
