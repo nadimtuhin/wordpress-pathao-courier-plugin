@@ -115,8 +115,8 @@ function pt_hms_settings_init()
     add_settings_section('section_one', 'API Credentials', 'section_one_callback', 'pt_hms_settings');
     add_settings_field('client_id', 'Client ID', 'field_client_id_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('client_secret', 'Client Secret', 'field_client_secret_callback', 'pt_hms_settings', 'section_one');
-    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one');
-    add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one');
+//    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one'); // todo: remove this
+//    add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one'); // todo: remove this
     add_settings_field(
         'default_store',
         'Default Store',
