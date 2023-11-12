@@ -86,7 +86,7 @@ function ajax_pt_hms_create_new_order()
     }
 
     // add consignment_id to order meta
-    add_post_meta($orderId, 'ptc_consignment_id', $response['data']['consignment_id']);
+    update_post_meta($orderId, 'ptc_consignment_id', $response['data']['consignment_id']);
 
     // Send the response back to JavaScript
     wp_send_json($response);
@@ -153,10 +153,19 @@ function register_custom_endpoint() {
 function handle_custom_endpoint_request($data) {
 
     $orderId = $data['merchant_order_id'];
+    $status = $data['order_status_slug'];
     $order = wc_get_order($orderId);
 
+    if (!$order) {
+        wp_send_json_error('no_order', 'No order found', 404);
+    }
 
+    // add consignment_id to order meta
+    update_post_meta($orderId, 'ptc_status', $status);
 
-
-    return rest_ensure_response($order);
+    return rest_ensure_response(array(
+        'status' => 200,
+        'message' => 'Order status updated',
+        'data' => null
+    ));
 }
