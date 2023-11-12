@@ -24,9 +24,7 @@ function populate_store_column($column, $post_id)
 
     if ($column === 'pathao_status') {
         $status = get_post_meta($post_id, 'ptc_status', true);
-        if ($status) {
-            echo sprintf('<span id="%s"> %s </span>', $post_id, ucfirst($status));
-        }
+        echo sprintf('<span id="%s"> %s </span>', $post_id, ucfirst($status));
     }
 }
 
@@ -40,7 +38,7 @@ function render_store_modal_button($post_id)
         return sprintf('<pre> %s </pre>', $consignmentId);
     }
 
-    return sprintf('<span class="ptc-assign-area">'. $button .'</span>', $post_id);
+    return sprintf('<span class="ptc-assign-area">' . $button . '</span>', $post_id);
 }
 
 function render_form_group($label, $input)
@@ -68,7 +66,7 @@ function render_store_modal_content()
 
 
     echo
-    '<div id="ptc-custom-modal" class="modal pt_hms_order_modal" style="display: none;">
+        '<div id="ptc-custom-modal" class="modal pt_hms_order_modal" style="display: none;">
       <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Send this through pathao courier</h2>
@@ -117,6 +115,7 @@ function render_store_modal_content()
       </div>
   </div>';
 }
+
 add_action('admin_enqueue_scripts', 'render_store_modal_content');
 
 
@@ -125,7 +124,7 @@ function render_stores_dropdown()
     // Simulated database query
     $stores = pt_hms_get_stores();
     $options = array_map(
-        fn ($store) => sprintf("<option value='%s'>%s</option>", $store['store_id'], $store['store_name']),
+        fn($store) => sprintf("<option value='%s'>%s</option>", $store['store_id'], $store['store_name']),
         $stores
     );
     $select = sprintf("<select id='store' name='store'>%s</select>", implode('', $options));
