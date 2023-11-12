@@ -186,6 +186,11 @@ function pt_hms_create_new_order($order_data)
 
     $response = wp_remote_post($api_url, $args);
 
+    // status code 201 means created
+    if (wp_remote_retrieve_response_code($response) >= 300) {
+        wp_send_json_error(json_decode(wp_remote_retrieve_body($response), true), wp_remote_retrieve_response_code($response));
+    }
+
     if (is_wp_error($response)) {
         return $response->get_error_message();
     }
