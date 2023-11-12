@@ -152,11 +152,11 @@ function register_custom_endpoint() {
                 $client_secret = $_SERVER['HTTP_WEBHOOK_SECRET'];
                 $secret = get_option('pt_hms_settings')['client_secret'] ?? null;
 
-                if ($secret && $client_secret === $secret) {
-                    return true;
+                if (!$secret && $client_secret !== $secret) {
+                    return false;
                 }
 
-                return false;
+                return true;
             }
 
         },
