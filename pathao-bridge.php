@@ -163,7 +163,8 @@ function pt_hms_create_new_order($order_data)
         'headers' => array(
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
+            'source' => 'woocommerce'
         ),
         'body' => json_encode(array(
             'store_id' => $order_data['store_id'],
