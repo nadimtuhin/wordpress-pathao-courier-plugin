@@ -140,4 +140,23 @@ function ajax_pt_wc_order_details()
     wp_send_json_success($orderData);
 }
 
+add_action('rest_api_init', 'register_custom_endpoint');
 
+function register_custom_endpoint() {
+    register_rest_route('ptc/v1', '/webhook', array(
+        'methods' => 'POST',
+        'callback' => 'handle_custom_endpoint_request',
+    ));
+}
+
+
+function handle_custom_endpoint_request($data) {
+
+    $orderId = $data['merchant_order_id'];
+    $order = wc_get_order($orderId);
+
+
+
+
+    return rest_ensure_response($order);
+}
