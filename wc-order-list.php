@@ -11,6 +11,7 @@ function initialize_admin_columns()
 function add_store_column_to_order_list($columns)
 {
     $columns['pathao'] = __('Pathao Courier', 'textdomain');
+    $columns['pathao_status'] = __('Pathao Courier Status', 'textdomain');
     return $columns;
 }
 
@@ -18,21 +19,28 @@ function populate_store_column($column, $post_id)
 {
     if ($column === 'pathao') {
         $order = wc_get_order($post_id);
-        echo render_store_modal_button($post_id, $order);
+        echo render_store_modal_button($post_id);
+    }
+
+    if ($column === 'pathao_status') {
+        $status = get_post_meta($post_id, 'ptc_status', true);
+        if ($status) {
+            echo sprintf('<span id="%s"> %s </span>', $post_id, ucfirst($status));
+        }
     }
 }
 
 function render_store_modal_button($post_id)
 {
-    $meta = get_post_meta($post_id, 'ptc_consignment_id', true);
+    $consignmentId = get_post_meta($post_id, 'ptc_consignment_id', true);
 
-    $value = sprintf('<button class="ptc-open-modal-button" data-order-id="%s">Send with Pathao</button>', $post_id);
+    $button = sprintf('<button class="ptc-open-modal-button" data-order-id="%s">Send with Pathao</button>', $post_id);
 
-    if ($meta) {
-        return sprintf('<pre> %s </pre>', $meta);
+    if ($consignmentId) {
+        return sprintf('<pre> %s </pre>', $consignmentId);
     }
 
-    return sprintf('<span class="ptc-assign-area">'. $value .'</span>', $post_id);
+    return sprintf('<span class="ptc-assign-area">'. $button .'</span>', $post_id);
 }
 
 function render_form_group($label, $input)

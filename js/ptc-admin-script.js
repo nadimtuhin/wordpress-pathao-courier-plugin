@@ -124,11 +124,10 @@ jQuery(document).ready(function ($) {
                 order_data: orderData
             },
             success: function (response) {
-               console.log(response);
-
                let consignmentId = response.data.consignment_id;
 
                $(`[data-order-id="${orderId}"].ptc-open-modal-button`).parent().html(`<pre> ${consignmentId} </pre>`);
+               $(`span#${orderId}`).html(`Pending`);
 
                ptcModal.hide();
                

@@ -87,6 +87,7 @@ function ajax_pt_hms_create_new_order()
 
     // add consignment_id to order meta
     update_post_meta($orderId, 'ptc_consignment_id', $response['data']['consignment_id']);
+    update_post_meta($orderId, 'ptc_status', 'pending');
 
     // Send the response back to JavaScript
     wp_send_json($response);
@@ -166,7 +167,7 @@ function register_custom_endpoint() {
 
 function ptc_webhook_handler($data) {
 
-    $orderId = $data['merchant_order_id'];
+    $orderId = $data['order_status'];
     $status = $data['order_status_slug'];
     $order = wc_get_order($orderId);
 
