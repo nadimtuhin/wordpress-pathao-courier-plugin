@@ -74,7 +74,7 @@ function pt_hms_get_token($reset = false)
  * @param mixed $refresh_response
  * @return array
  */
-function transformTokenResponse(mixed $refresh_response): array
+function transformTokenResponse(mixed $refresh_response)
 {
     return array(
         'access_token' => $refresh_response['access_token'],
