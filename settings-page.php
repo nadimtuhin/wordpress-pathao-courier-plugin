@@ -6,7 +6,7 @@ add_action('wp_ajax_get_token', 'ajax_get_token');
 
 function ajax_get_token()
 {
-    $token = pt_hms_get_token();
+    $token = pt_hms_get_token(true);
     if ($token) {
         wp_send_json_success(array('access_token' => $token));
     } else {
