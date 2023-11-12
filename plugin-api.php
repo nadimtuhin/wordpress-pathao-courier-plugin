@@ -145,12 +145,26 @@ add_action('rest_api_init', 'register_custom_endpoint');
 function register_custom_endpoint() {
     register_rest_route('ptc/v1', '/webhook', array(
         'methods' => 'POST',
-        'callback' => 'handle_custom_endpoint_request',
+        'callback' => 'ptc_webhook_handler',
+        'permission_callback' => function ($request) {
+
+            if (isset($_SERVER['HTTP_WEBHOOK_SECRET'])) {
+                $client_secret = $_SERVER['HTTP_WEBHOOK_SECRET'];
+                $secret = get_option('pt_hms_settings')['client_secret'] ?? null;
+
+                if ($secret && $client_secret === $secret) {
+                    return true;
+                }
+
+                return false;
+            }
+
+        },
     ));
 }
 
 
-function handle_custom_endpoint_request($data) {
+function ptc_webhook_handler($data) {
 
     $orderId = $data['merchant_order_id'];
     $status = $data['order_status_slug'];
