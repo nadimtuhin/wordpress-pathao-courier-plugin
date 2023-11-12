@@ -48,8 +48,8 @@ function pt_hms_settings_page()
     $all_fields_filled = isset(
         $options['client_id'], 
         $options['client_secret'], 
-        $options['username'], 
-        $options['password'], 
+//        $options['username'],
+//        $options['password'],
         $options['environment']
     );
 
