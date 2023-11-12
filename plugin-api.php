@@ -167,8 +167,8 @@ function register_custom_endpoint() {
 
 function ptc_webhook_handler($data) {
 
-    $orderId = $data['order_status'];
-    $status = $data['order_status_slug'];
+    $orderId = $data['merchant_order_id'];
+    $status = $data['order_status'];
     $order = wc_get_order($orderId);
 
     if (!$order) {
