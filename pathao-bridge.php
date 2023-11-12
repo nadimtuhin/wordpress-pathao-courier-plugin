@@ -164,7 +164,7 @@ function pt_hms_create_new_order($order_data)
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'source' => 'woocommerce'
+//            'source' => 'woocommerce' // todo: add source after testing
         ),
         'body' => json_encode(array(
             'store_id' => $order_data['store_id'],
