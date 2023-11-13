@@ -115,7 +115,8 @@ function pt_hms_settings_init()
     add_settings_section('section_one', 'API Credentials', 'section_one_callback', 'pt_hms_settings');
     add_settings_field('client_id', 'Client ID', 'field_client_id_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('client_secret', 'Client Secret', 'field_client_secret_callback', 'pt_hms_settings', 'section_one');
-//    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one'); // todo: remove this
+
+//    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one');
 //    add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one'); // todo: remove this
     add_settings_field(
         'default_store',
@@ -125,6 +126,7 @@ function pt_hms_settings_init()
         'section_one'
     );
     add_settings_field('environment', 'Environment', 'field_environment_callback', 'pt_hms_settings', 'section_one');
+    add_settings_field('client_webhook', 'Client Default Webhook', 'field_webhook_callback', 'pt_hms_settings', 'section_one');
 }
 
 function section_one_callback()
@@ -144,6 +146,17 @@ function field_client_secret_callback()
     $options = get_option('pt_hms_settings');
     $value = is_array($options) && isset($options['client_secret']) ? $options['client_secret'] : '';
     echo "<input type='password' name='pt_hms_settings[client_secret]' value='{$value}' style='width: 300px;' />";
+}
+
+function field_webhook_callback()
+{
+    $baseUrl = get_site_url();
+    $value = "{$baseUrl}/wp-json/ptc/v1/webhook";
+    echo "<input type='text' name='pt_hms_settings[webhook_url]' value='{$value}' style='width: 300px;' />";
+    echo "<p class='description'>
+            This is the default <a href=\"https://merchant.pathao.com//courier/developer-api\">webhook</a> URL that will be used for all orders.
+            Client Secret will be your webhook secret.
+          </p>";
 }
 
 function field_username_callback()
