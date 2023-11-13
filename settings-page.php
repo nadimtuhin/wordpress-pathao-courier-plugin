@@ -153,8 +153,7 @@ function field_client_secret_callback()
 function field_webhook_callback()
 {
     $baseUrl = get_site_url();
-    $value = "{$baseUrl}/wp-json/ptc/v1/webhook";
-    echo "<input type='text' name='pt_hms_settings[webhook_url]' value='{$value}' style='width: 300px;' />";
+    echo "{$baseUrl}/wp-json/ptc/v1/webhook";
     echo "<p class='description'>
             This is the default <a href=\"https://merchant.pathao.com//courier/developer-api\">webhook</a> URL that will be used for all orders.
           </p>";
