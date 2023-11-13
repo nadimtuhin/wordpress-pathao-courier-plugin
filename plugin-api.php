@@ -149,8 +149,8 @@ function register_custom_endpoint() {
         'callback' => 'ptc_webhook_handler',
         'permission_callback' => function ($request) {
 
-            if (isset($_SERVER['HTTP_WEBHOOK_SECRET'])) {
-                $client_secret = $_SERVER['HTTP_WEBHOOK_SECRET'];
+            if (isset($_SERVER['HTTP_X_PATHAO_SIGNATURE'])) {
+                $client_secret = $_SERVER['HTTP_X_PATHAO_SIGNATURE'];
                 $secret = get_option('pt_hms_settings')['client_secret'] ?? null;
 
                 if (!$secret && $client_secret !== $secret) {
