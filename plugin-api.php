@@ -151,9 +151,9 @@ function register_custom_endpoint() {
 
             if (isset($_SERVER['HTTP_X_PATHAO_SIGNATURE'])) {
                 $client_secret = $_SERVER['HTTP_X_PATHAO_SIGNATURE'];
-                $secret = get_option('pt_hms_settings')['client_secret'] ?? null;
+                $secret = get_option('pt_hms_settings')['webhook_secret'] ?? null;
 
-                if (!$secret && $client_secret !== $secret) {
+                if (!$secret || $client_secret !== $secret) {
                     return false;
                 }
 
