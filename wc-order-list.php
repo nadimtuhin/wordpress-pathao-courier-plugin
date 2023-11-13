@@ -4,22 +4,31 @@ add_action('init', 'initialize_admin_columns');
 
 function initialize_admin_columns()
 {
-    add_filter('manage_edit-shop_order_columns', 'add_store_column_to_order_list');
-    add_action('manage_shop_order_posts_custom_column', 'populate_store_column', 10, 2);
+    add_filter('manage_edit-shop_order_columns', 'ptc_add_column_to_order_list');
+    add_action('manage_shop_order_posts_custom_column', 'ptc_populate_store_column', 10, 2);
+
+    add_filter('woocommerce_shop_order_list_table_columns', 'ptc_add_column_to_order_list'); // new woocommerce orders table
+    add_action('woocommerce_shop_order_list_table_custom_column', 'ptc_populate_store_column_for_orders_table', 10, 2);// new woocommerce orders table
 }
 
-function add_store_column_to_order_list($columns)
+function ptc_add_column_to_order_list($columns)
 {
     $columns['pathao'] = __('Pathao Courier', 'textdomain');
     $columns['pathao_status'] = __('Pathao Courier Status', 'textdomain');
     return $columns;
 }
 
-function populate_store_column($column, $post_id)
+function ptc_populate_store_column_for_orders_table($column, $order)
+{
+     ptc_populate_store_column($column, $order->get_id());
+}
+
+
+function ptc_populate_store_column($column, $post_id)
 {
     if ($column === 'pathao') {
         $order = wc_get_order($post_id);
-        echo render_store_modal_button($post_id);
+        echo ptc_render_store_modal_button($post_id);
     }
 
     if ($column === 'pathao_status') {
@@ -28,7 +37,7 @@ function populate_store_column($column, $post_id)
     }
 }
 
-function render_store_modal_button($post_id)
+function ptc_render_store_modal_button($post_id)
 {
     $consignmentId = get_post_meta($post_id, 'ptc_consignment_id', true);
 
@@ -47,7 +56,7 @@ function render_form_group($label, $input)
 }
 
 
-function render_store_modal_content()
+function ptc_render_store_modal_content()
 {
 
     $nameForm = render_form_group('Name', '<input type="text" id="ptc_wc_order_name" name="name" value="">');
@@ -116,17 +125,4 @@ function render_store_modal_content()
   </div>';
 }
 
-add_action('admin_enqueue_scripts', 'render_store_modal_content');
-
-
-function render_stores_dropdown()
-{
-    // Simulated database query
-    $stores = pt_hms_get_stores();
-    $options = array_map(
-        fn($store) => sprintf("<option value='%s'>%s</option>", $store['store_id'], $store['store_name']),
-        $stores
-    );
-    $select = sprintf("<select id='store' name='store'>%s</select>", implode('', $options));
-    return render_form_group('Store', $select);
-}
+add_action('admin_enqueue_scripts', 'ptc_render_store_modal_content');
