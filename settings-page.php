@@ -119,13 +119,13 @@ function pt_hms_settings_init()
 
 //    add_settings_field('username', 'Username (Email)', 'field_username_callback', 'pt_hms_settings', 'section_one');
 //    add_settings_field('password', 'Password', 'field_password_callback', 'pt_hms_settings', 'section_one'); // todo: remove this
-    add_settings_field(
-        'default_store',
-        'Default Store',
-        'field_default_store_callback',
-        'pt_hms_settings',
-        'section_one'
-    );
+//    add_settings_field(
+//        'default_store',
+//        'Default Store',
+//        'field_default_store_callback',
+//        'pt_hms_settings',
+//        'section_one'
+//    );
     add_settings_field('environment', 'Environment', 'field_environment_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('client_webhook', 'Client Default Webhook', 'field_webhook_callback', 'pt_hms_settings', 'section_one');
     add_settings_field('client_webhook_secret', 'Client Webhook Secret', 'field_webhook_secret_callback', 'pt_hms_settings', 'section_one');
