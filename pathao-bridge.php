@@ -1,13 +1,13 @@
 <?php
-function get_base_url()
+function get_base_url($environment = null)
 {
     $options = get_option('pt_hms_settings');
-    $environment = $options['environment'] ?? 'live';
+    $environment = $environment ?: $options['environment'] ?? 'live';
 
     return ($environment === 'staging') ? 'https://courier-api-sandbox.pathao.com/' : 'https://api-hermes.pathao.com/';
 }
 
-function issue_access_token($clientId = null, $clientSecret = null)
+function issue_access_token($clientId = null, $clientSecret = null, $environment = null)
 {
     // Get settings from WordPress options
     $options = get_option('pt_hms_settings');
@@ -15,7 +15,7 @@ function issue_access_token($clientId = null, $clientSecret = null)
     $clientId = ($clientId ?:  $options['client_id']) ?? '';
     $clientSecret = ($clientSecret?: $options['client_secret']) ?? '';
 
-    $base_url = get_base_url() . "aladdin/api/v1/external/login";
+    $base_url = get_base_url($environment) . "aladdin/api/v1/external/login";
 
     $response = wp_remote_post($base_url, array(
         'headers' => array(

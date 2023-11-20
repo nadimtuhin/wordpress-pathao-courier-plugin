@@ -6,9 +6,16 @@ add_action('wp_ajax_get_token', 'ajax_get_token');
 
 function ajax_get_token()
 {
-    $token = issue_access_token($_POST['client_id'] ?? '', $_POST['client_secret'] ?? '');
+    $data = issue_access_token(
+        $_POST['client_id'] ?? '',
+        $_POST['client_secret'] ?? '',
+        $_POST['environment'] ?? ''
+    );
+
+    $token = $data['access_token'] ?? null;
+
     if ($token) {
-        wp_send_json_success(array('access_token' => $token));
+        wp_send_json_success($data);
     } else {
         wp_send_json_error(array('message' => 'Failed to retrieve the token.'));
     }
@@ -99,6 +106,9 @@ function pt_hms_settings_page()
 
                     let clientId = $('#client_id').val();
                     let clientSecret = $('#client_secret').val();
+                    let environment = $('#client_environment').val();
+
+                    console.log({clientId, clientSecret, environment})
 
                     $.ajax({
                         url: ajaxurl,
@@ -106,7 +116,8 @@ function pt_hms_settings_page()
                         data: {
                             action: 'get_token',
                             client_id: clientId,
-                            client_secret: clientSecret
+                            client_secret: clientSecret,
+                            environment: environment
                         },
                         success: function (response) {
                             if (response.success) {
@@ -232,7 +243,7 @@ function field_environment_callback()
 {
     $options = get_option('pt_hms_settings');
     $selected = is_array($options) && isset($options['environment']) ? $options['environment'] : '';
-    echo "<select name='pt_hms_settings[environment]' style='width: 300px;'>
+    echo "<select name='pt_hms_settings[environment]' id='client_environment'  style='width: 300px;'>
       <option value='live' " . selected($selected, 'live', false) . ">Live</option>
       <option value='staging' " . selected($selected, 'staging', false) . ">Staging</option>
   </select>";
