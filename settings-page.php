@@ -6,6 +6,18 @@ add_action('wp_ajax_get_token', 'ajax_get_token');
 
 function ajax_get_token()
 {
+    $token = issue_access_token($_POST['client_id'] ?? '', $_POST['client_secret'] ?? '');
+    if ($token) {
+        wp_send_json_success(array('access_token' => $token));
+    } else {
+        wp_send_json_error(array('message' => 'Failed to retrieve the token.'));
+    }
+}
+
+add_action('wp_ajax_reset_token', 'ajax_reset_token');
+
+function ajax_reset_token()
+{
     $token = pt_hms_get_token(true);
     if ($token) {
         wp_send_json_success(array('access_token' => $token));
@@ -75,20 +87,50 @@ function pt_hms_settings_page()
         <section>
             <h3>Test Credentials</h3>
             <button type="button" id="fetch-token-btn">Test credentials validity</button>
+
+            <?php if ($token): ?>
+                <button type="button" id="reset-token-btn">Reset token</button>
+            <?php endif; ?>
         </section>
         <!-- JavaScript for AJAX call -->
         <script type="text/javascript">
             jQuery(document).ready(function ($) {
                 $('#fetch-token-btn').on('click', function () {
+
+                    let clientId = $('#client_id').val();
+                    let clientSecret = $('#client_secret').val();
+
                     $.ajax({
                         url: ajaxurl,
                         method: 'POST',
                         data: {
                             action: 'get_token',
+                            client_id: clientId,
+                            client_secret: clientSecret
                         },
                         success: function (response) {
                             if (response.success) {
                                 alert('API credentials valid');
+                            } else {
+                                alert('Error: ' + response.data.message);
+                            }
+                        },
+                        error: function () {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+                $('#reset-token-btn').on('click', function () {
+
+                    $.ajax({
+                        url: ajaxurl,
+                        method: 'POST',
+                        data: {
+                            action: 'reset_token',
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert('Token Reset Successful');
                             } else {
                                 alert('Error: ' + response.data.message);
                             }
@@ -140,14 +182,14 @@ function field_client_id_callback()
 {
     $options = get_option('pt_hms_settings');
     $value = is_array($options) && isset($options['client_id']) ? $options['client_id'] : '';
-    echo "<input type='text' name='pt_hms_settings[client_id]' value='{$value}' style='width: 300px;' />";
+    echo "<input type='text' id='client_id' name='pt_hms_settings[client_id]' value='{$value}' style='width: 300px;' />";
 }
 
 function field_client_secret_callback()
 {
     $options = get_option('pt_hms_settings');
     $value = is_array($options) && isset($options['client_secret']) ? $options['client_secret'] : '';
-    echo "<input type='password' name='pt_hms_settings[client_secret]' value='{$value}' style='width: 300px;' />";
+    echo "<input type='password' id='client_secret' name='pt_hms_settings[client_secret]' value='{$value}' style='width: 300px;' />";
 }
 
 function field_webhook_callback()
@@ -165,7 +207,7 @@ function field_webhook_secret_callback()
     $clientSecret = $options['client_secret'] ?? '';
     $webhookSecret = $options['webhook_secret'] ?? '';
     $value = $webhookSecret ? $webhookSecret : $clientSecret;
-    echo "<input type='password' name='pt_hms_settings[webhook_secret]' value='{$value}' style='width: 300px;' />";
+    echo "<input type='text' name='pt_hms_settings[webhook_secret]' value='{$value}' style='width: 300px;' />";
     echo "<p class='description'>
             The default <a href=\"https://merchant.pathao.com//courier/developer-api\">webhook</a> secret will be your client secret if you don't provide any webhook secret.
             </p>";

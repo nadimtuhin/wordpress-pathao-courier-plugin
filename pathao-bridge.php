@@ -7,13 +7,13 @@ function get_base_url()
     return ($environment === 'staging') ? 'https://courier-api-sandbox.pathao.com/' : 'https://api-hermes.pathao.com/';
 }
 
-function issue_access_token()
+function issue_access_token($clientId = null, $clientSecret = null)
 {
     // Get settings from WordPress options
     $options = get_option('pt_hms_settings');
 
-    $client_id = $options['client_id'] ?? '';
-    $client_secret = $options['client_secret'] ?? '';
+    $clientId = ($clientId ?:  $options['client_id']) ?? '';
+    $clientSecret = ($clientSecret?: $options['client_secret']) ?? '';
 
     $base_url = get_base_url() . "aladdin/api/v1/external/login";
 
@@ -23,8 +23,8 @@ function issue_access_token()
             'content-type' => 'application/json'
         ),
         'body' => json_encode(array(
-            'client_id' => $client_id,
-            'client_secret' => $client_secret,
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
         ))
     ));
 
