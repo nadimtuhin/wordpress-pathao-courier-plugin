@@ -58,7 +58,16 @@ jQuery(document).ready(function ($) {
             shippingAddressInput.val(`${orderData?.shipping?.address_1}, ${orderData?.shipping?.address_2}, ${orderData?.shipping?.city}, ${orderData?.shipping?.state}, ${orderData?.shipping?.postcode}`);
 
             totalPriceDom.html(`${orderData.total} ${orderData.currency}`);
-            totalPriceInput.val(orderData.total);
+
+            // check payment date, if payment date is available then set total price to 0
+            if (orderData?.payment_date) {
+                totalPriceInput.val(0);
+                $('#ptc_wc_order_payment_status').html('paid');
+            } else {
+                totalPriceInput.val(orderData.total);
+                $('#ptc_wc_order_payment_status').html('unpaid');
+            }
+
             totalWeightInput.val(orderData.total_weight ? orderData.total_weight : 1);
             totalQuantityInput.val(orderData.total_items);
 

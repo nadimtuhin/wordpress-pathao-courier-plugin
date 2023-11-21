@@ -69,7 +69,7 @@ function ptc_render_store_modal_content()
     $phoneForm = render_form_group('Phone', '<input type="text" id="ptc_wc_order_phone" name="phone" value="">');
 
     $orderNumber = render_form_group('Order Number', '<input type="text" id="ptc_wc_order_number" name="order_number" value="" readonly>');
-    $priceForm = render_form_group('Price', '<input type="text" id="ptc_wc_order_price" name="ptc_wc_order_price">');
+    $priceForm = render_form_group('Collectable Amount', '<input type="text" id="ptc_wc_order_price" name="ptc_wc_order_price">');
     $weightForm = render_form_group('Weight', '<input type="text" id="ptc_wc_order_weight" name="ptc_wc_order_weight" value="1">');
     $quantityForm = render_form_group('Quantity', '<input type="number" disabled id="ptc_wc_order_quantity" name="ptc_wc_order_quantity">');
     $addressForm = render_form_group('Address', '<textarea id="ptc_wc_shipping_address" name="address"></textarea>');
@@ -92,6 +92,7 @@ function ptc_render_store_modal_content()
               <div class="order-info">
                   <h3>Order Information</h3>
                   <p><strong>Total Price:</strong> <span id="ptc_wc_order_total_price"> </span> </p>
+                  <p><strong>Payment Status:</strong> <span id="ptc_wc_order_payment_status"> </span> </p>
                   <h4>Order Items: <span id="ptc_wc_total_order_items"></span></h4>
                   <ul id="ptc_wc_order_items">
                   </ul>
