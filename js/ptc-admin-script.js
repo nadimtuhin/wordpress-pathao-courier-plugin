@@ -125,9 +125,11 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                let consignmentId = response.data.consignment_id;
+               let deliveryFee = response.data.delivery_fee;
 
                $(`[data-order-id="${orderId}"].ptc-open-modal-button`).parent().html(`<pre> ${consignmentId} </pre>`);
                $(`span#${orderId}`).html(`Pending`);
+               $(`span#ptc_delivery_fee-${orderId}`).html(deliveryFee);
 
                ptcModal.hide();
                

@@ -15,6 +15,7 @@ function ptc_add_column_to_order_list($columns)
 {
     $columns['pathao'] = __('Pathao Courier', 'textdomain');
     $columns['pathao_status'] = __('Pathao Courier Status', 'textdomain');
+    $columns['pathao_delivery_fee'] = __('Pathao Courier Delivery Fee', 'textdomain');
     return $columns;
 }
 
@@ -34,6 +35,11 @@ function ptc_populate_store_column($column, $post_id)
     if ($column === 'pathao_status') {
         $status = get_post_meta($post_id, 'ptc_status', true);
         echo sprintf('<span id="%s"> %s </span>', $post_id, ucfirst($status));
+    }
+
+    if ($column === 'pathao_delivery_fee') {
+        $status = get_post_meta($post_id, 'ptc_delivery_fee', true);
+        echo sprintf('<span id="ptc_delivery_fee-%s"> %s </span>', $post_id, ucfirst($status));
     }
 }
 
