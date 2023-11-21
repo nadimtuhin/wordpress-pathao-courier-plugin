@@ -105,6 +105,8 @@ function ajax_pt_wc_order_details()
 
     $order = wc_get_order($orderId);
 
+
+
     if (!$order) {
         return wp_send_json_error('no_order', 'No order found', 404);
     }
@@ -113,7 +115,7 @@ function ajax_pt_wc_order_details()
     $orderItems = 0;
     $totalWeight = 0;
     // add items to order
-    $orderData['items'] = array_values(array_map(function($item) use (&$orderItems, &$totalWeight) {
+    $orderData['items'] = array_values(array_map(function($item) use (&$orderItems, &$totalWeight, $datePaid) {
 
         $quantity = $item->get_quantity();
         $totalWeight += (float)$item->get_product()->get_weight();
@@ -137,6 +139,7 @@ function ajax_pt_wc_order_details()
     
     $orderData['total_items'] = $orderItems;
     $orderData['total_weight'] = $totalWeight;
+    $orderData['payment_date'] = $order->get_date_paid();
 
     wp_send_json_success($orderData);
 }
