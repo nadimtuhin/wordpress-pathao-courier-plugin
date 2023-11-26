@@ -85,7 +85,7 @@ function transformTokenResponse($refresh_response)
 
 function pt_hms_get_stores()
 {
-    $url = get_base_url() . "/aladdin/api/v1/stores";
+    $url = get_base_url() . "aladdin/api/v1/stores";
     $token = pt_hms_get_token();
 
     $args = array(
@@ -103,7 +103,7 @@ function pt_hms_get_stores()
 
 function pt_hms_get_cities()
 {
-    $url = get_base_url() . "/aladdin/api/v1/countries/1/city-list";
+    $url = get_base_url() . "aladdin/api/v1/countries/1/city-list";
     $token = pt_hms_get_token();
 
     $args = array(
@@ -121,7 +121,7 @@ function pt_hms_get_cities()
 
 function pt_hms_get_zones($city_id)
 {
-    $url = get_base_url() . "/aladdin/api/v1/cities/" . $city_id . "/zone-list";
+    $url = get_base_url() . "aladdin/api/v1/cities/" . $city_id . "/zone-list";
     $token = pt_hms_get_token();
 
     $args = array(
@@ -139,7 +139,7 @@ function pt_hms_get_zones($city_id)
 
 function pt_hms_get_areas($zone_id)
 {
-    $url = get_base_url() . "/aladdin/api/v1/zones/" . $zone_id . "/area-list";
+    $url = get_base_url() . "aladdin/api/v1/zones/" . $zone_id . "/area-list";
     $token = pt_hms_get_token();
 
     $args = array(
@@ -156,7 +156,7 @@ function pt_hms_get_areas($zone_id)
 
 function pt_hms_create_new_order($order_data)
 {
-    $api_url = get_base_url() . '/aladdin/api/v1/orders';
+    $api_url = get_base_url() . 'aladdin/api/v1/orders';
     $token = pt_hms_get_token();
 
     $args = array(
